@@ -6,7 +6,7 @@ namespace Blogging_Platform.Extensions
     {
         public static Guid GetUserId(this ClaimsPrincipal user)
         {
-            var claim = user.FindFirst("UserId");
+            var claim = user.FindFirst(ClaimTypes.NameIdentifier);
 
             if (claim == null)
                 throw new UnauthorizedAccessException("User claim is not found");

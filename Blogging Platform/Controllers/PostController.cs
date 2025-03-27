@@ -4,6 +4,7 @@ using Blogging_Platform.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Blogging_Platform.Controllers
 {
@@ -33,7 +34,7 @@ namespace Blogging_Platform.Controllers
         public async Task<IActionResult> GetPosts()
         {
             var posts = await _service.GetPostsAsync(User.GetUserId(), User.IsInRole("admin"));
-
+            
             return Ok(posts);
         }
 
@@ -41,6 +42,7 @@ namespace Blogging_Platform.Controllers
         public async Task<IActionResult> UpdatePost(Guid postId, PostForUpdateDto postModel)
         {
             var post = await _service.UpdatePostAsync(User.GetUserId(), postId, postModel);
+            
             return Ok(post);
         }
 

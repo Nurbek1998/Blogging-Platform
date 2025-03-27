@@ -55,7 +55,7 @@ namespace Blogging_Platform.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var userClaims = new[]
             {
-                new Claim("UserId", user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim("Username", user.Username),
                 new Claim(ClaimTypes.Role, user.Role.ToLower()),
             };

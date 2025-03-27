@@ -10,6 +10,8 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Blogging_Platform.Validators;
+using Blogging_Platform;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -119,7 +121,7 @@ builder.Services.AddAuthorizationBuilder()
         o.RequireRole("admin");
     });
 
-
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -130,10 +132,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(app => app.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 
+app.MapHub<NotificationHub>("/notificationsHub");
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+    RequestPath = "/static"
+});
 
 
 app.Run();
