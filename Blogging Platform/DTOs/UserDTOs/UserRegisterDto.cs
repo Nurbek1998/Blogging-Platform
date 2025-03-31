@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Blogging_Platform.DTOs.UserDTOs
+namespace Blogging_Platform.DTOs.UserDTOs;
+
+public class UserRegisterDto
 {
-    public class UserRegisterDto
-    {
-        [Required]
-        public string Username { get; set; }
+    [Required]
+    public string Username { get; set; }
 
-        [Required, MinLength(6)]
-        public string Password { get; set; }
+    [Required, MinLength(6)]
+    public string Password { get; set; }
 
-        [Required]
-        public string Role { get; set; }
-    }
+    [Required]
+    public string Role { get; set; }
 }

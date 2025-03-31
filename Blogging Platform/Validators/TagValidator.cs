@@ -1,10 +1,10 @@
-﻿using Blogging_Platform.DTOs.TagDTOs;
+﻿using Blogging_Platform.Entities;
 using FluentValidation;
 
 namespace Blogging_Platform.Validators;
-public class TagForCreationDtoValidator : AbstractValidator<TagModel>
+public class TagValidator : AbstractValidator<Tag>
 {
-    public TagForCreationDtoValidator()
+    public TagValidator()
     {
         RuleFor(x => x.Name)
             .Cascade(CascadeMode.Stop)

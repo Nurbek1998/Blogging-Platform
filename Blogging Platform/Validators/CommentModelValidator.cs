@@ -1,27 +1,12 @@
 ﻿using Blogging_Platform.DTOs.CommentDTOs;
 using FluentValidation;
 
-namespace Blogging_Platform.Validators
+namespace Blogging_Platform.Validators;
+public class CommentModelValidator : AbstractValidator<CommentForUpdateDto>
 {
-    public class CommentForCreationValidator : AbstractValidator<CommentForCreationDto>
+    public CommentModelValidator()
     {
-        public CommentForCreationValidator()
-        {
-            RuleFor(x => x.Content)
-                .NotEmpty().WithMessage("Content cannot be empty or null");
-
-            RuleFor(x => x.PostId).
-                NotEmpty().WithMessage("PostId cannot be empty")
-                .Must(x => x != Guid.Empty).WithMessage("PostId cannot be an empty Guid.");
-        }
-    }
-
-    public class CommentModelValidator : AbstractValidator<CommentForUpdateDto>
-    {
-        public CommentModelValidator()
-        {
-            RuleFor(x => x.Content)
-                .NotEmpty().WithMessage("Content cannot be empty or null");
-        }
+        RuleFor(x => x.Content)
+            .NotEmpty().WithMessage("Content cannot be empty or null");
     }
 }
