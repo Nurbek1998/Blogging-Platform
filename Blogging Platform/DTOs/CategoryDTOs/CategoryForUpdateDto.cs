@@ -1,8 +1,6 @@
-﻿namespace Blogging_Platform.DTOs.CategoryDTOs
+﻿namespace Blogging_Platform.DTOs.CategoryDTOs;
+public class CategoryForUpdateDto
 {
-    public class CategoryForUpdateDto
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-    }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
 }

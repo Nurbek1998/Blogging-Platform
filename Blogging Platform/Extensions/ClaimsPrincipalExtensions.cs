@@ -1,18 +1,15 @@
 ﻿using System.Security.Claims;
 
-namespace Blogging_Platform.Extensions
+namespace Blogging_Platform.Extensions;
+public static class ClaimsPrincipalExtensions
 {
-    public static class ClaimsPrincipalExtensions
+    public static Guid GetUserId(this ClaimsPrincipal user)
     {
-        public static Guid GetUserId(this ClaimsPrincipal user)
-        {
-            var claim = user.FindFirst(ClaimTypes.NameIdentifier);
+        var claim = user.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (claim == null)
-                throw new UnauthorizedAccessException("User claim is not found");
+        if (claim == null)
+            throw new UnauthorizedAccessException("User claim is not found");
 
-            return Guid.Parse(claim.Value);
-        }
-
+        return Guid.Parse(claim.Value);
     }
 }

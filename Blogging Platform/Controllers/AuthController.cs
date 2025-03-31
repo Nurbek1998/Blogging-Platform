@@ -7,50 +7,49 @@ using Microsoft.AspNetCore.Mvc;
 using FluentValidation;
 using Blogging_Platform.Validators;
 
-namespace Blogging_Platform.Controllers
+namespace Blogging_Platform.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController(IAuthService _service) : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController(IAuthService _service) : ControllerBase
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
     {
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
+        var validator = new RegistrationValidator();
+        var result = validator.Validate(dto);
+
+        if (!result.IsValid)
         {
-            var validator = new RegistrationValidator();
-            var result = validator.Validate(dto);
-
-            if (!result.IsValid)
+            foreach (var error in result.Errors)
             {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
-                return BadRequest(ModelState);
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
-           
-            var response = await _service.RegisterAsync(dto);
+            return BadRequest(ModelState);
+        }
+        //if (!ModelState.IsValid)
+        //    return BadRequest(ModelState);
+       
+        var response = await _service.RegisterAsync(dto);
 
-            if (response.Flag is true)
-            {
-                return Created("Created successfully", response);
-            }
-
-            else
-                return BadRequest("The registration failed suddenly");
-
+        if (response.Flag is true)
+        {
+            return Created("Created successfully", response);
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
-        {
-            var response = await _service.LoginAsync(dto);
+        else
+            return BadRequest("The registration failed suddenly");
 
-            if (response.Jwt is null)
-                return Unauthorized("Invalid username or password");
+    }
 
-            return Ok(new { Token = response.Jwt });
-        }
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
+    {
+        var response = await _service.LoginAsync(dto);
+
+        if (response.Jwt is null)
+            return Unauthorized("Invalid username or password");
+
+        return Ok(new { Token = response.Jwt });
     }
 }

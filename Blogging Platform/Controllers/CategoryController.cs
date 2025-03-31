@@ -7,68 +7,67 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Blogging_Platform.Controllers
+namespace Blogging_Platform.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminAuthorPolicy")]
+public class CategoryController(ICategoryService _service) : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminAuthorPolicy")]
-    public class CategoryController(ICategoryService _service) : ControllerBase
+    [HttpGet]
+    public async Task<IActionResult> GetCategories()
     {
-        [HttpGet]
-        public async Task<IActionResult> GetCategories()
-        {
-            var categories = await _service
-                .GetCategoriesAsync(User.GetUserId(), User.IsInRole("admin"));
+        var categories = await _service
+            .GetCategoriesAsync(User.GetUserId(), User.IsInRole("admin"));
 
-            return Ok(categories);
-        }
+        return Ok(categories);
+    }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategory(Guid id)
-        {
-            var category = await _service
-                .GetCategoryByIdAsync(id, User.GetUserId(), User.IsInRole("admin"));
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCategory(Guid id)
+    {
+        var category = await _service
+            .GetCategoryByIdAsync(id, User.GetUserId(), User.IsInRole("admin"));
 
-            if (category is null)
-                return NotFound();
+        if (category is null)
+            return NotFound();
 
-            return Ok(category);
-        }
+        return Ok(category);
+    }
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> DeleteCategory(Guid id)
-        {
-            var deleted = await _service.DeleteCategoryAsync(id);
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> DeleteCategory(Guid id)
+    {
+        var deleted = await _service.DeleteCategoryAsync(id);
 
-            if (deleted is false)
-                return NotFound();
+        if (deleted is false)
+            return NotFound();
 
-            return NoContent();
-        }
+        return NoContent();
+    }
 
-        [HttpPost]
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> CreateCategory(CategoryModel category)
-        {
-            var result = await _service.CreateCategoryAsync(category);
+    [HttpPost]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> CreateCategory(CategoryModel category)
+    {
+        var result = await _service.CreateCategoryAsync(category);
 
-            if (result is null)
-                return BadRequest();
+        if (result is null)
+            return BadRequest();
 
-            return CreatedAtAction(nameof(GetCategory), new { id = result.Id }, result);
-        }
+        return CreatedAtAction(nameof(GetCategory), new { id = result.Id }, result);
+    }
 
-        [HttpPut]
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> UpdateCategory(CategoryForUpdateDto category)
-        {
-            var result = await _service.UpdateCategoryAsync(category);
+    [HttpPut]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> UpdateCategory(CategoryForUpdateDto category)
+    {
+        var result = await _service.UpdateCategoryAsync(category);
 
-            if (result is null)
-                return BadRequest();
+        if (result is null)
+            return BadRequest();
 
-            return Ok(result);
-        }
+        return Ok(result);
     }
 }
